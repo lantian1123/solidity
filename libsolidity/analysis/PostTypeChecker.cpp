@@ -481,6 +481,12 @@ struct SimpleCounterForLoopChecker: public PostTypeChecker::Checker
 		if (!lhsIdentifier || !lhsIntegerType || !commonIntegerType || *lhsIntegerType != *commonIntegerType)
 			return false;
 
+		if (
+			auto const* incExpressionIdentifier = dynamic_cast<Identifier const*>(&simplePostExpression->subExpression());
+			incExpressionIdentifier->annotation().referencedDeclaration != lhsIdentifier->annotation().referencedDeclaration
+		)
+			return false;
+
 		LValueChecker lhsLValueChecker{*lhsIdentifier};
 		_forStatement.body().accept(lhsLValueChecker);
 		return !lhsLValueChecker.willBeWrittenTo();
