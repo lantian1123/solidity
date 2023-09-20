@@ -24,6 +24,8 @@
 #include <liblangutil/SemVerHandler.h>
 #include <libsolutil/Algorithms.h>
 #include <libsolutil/FunctionSelector.h>
+#include <libyul/optimiser/ASTWalker.h>
+#include <libyul/AST.h>
 
 #include <memory>
 
@@ -432,6 +434,23 @@ struct ReservedErrorSelector: public PostTypeChecker::Checker
 	}
 };
 
+class YulLValueChecker : public solidity::yul::ASTWalker
+{
+public:
+	YulLValueChecker(ASTString const& _identifierName): m_identifierName(_identifierName) {}
+	bool willBeWrittenTo() { return m_willBeWrittenTo; }
+	using solidity::yul::ASTWalker::operator();
+	void operator()(solidity::yul::Assignment const& _assignment) override
+	{
+		for (auto const& yulIdentifier: _assignment.variableNames)
+			if (yulIdentifier.name.str() == m_identifierName)
+				m_willBeWrittenTo = true;
+	}
+private:
+	ASTString const& m_identifierName;
+	bool m_willBeWrittenTo = false;
+};
+
 class LValueChecker: public ASTConstVisitor
 {
 public:
@@ -447,6 +466,12 @@ public:
 			_identifier.annotation().willBeWrittenTo
 		)
 			m_willBeWrittenTo = true;
+	}
+	void endVisit(InlineAssembly const& _inlineAssembly) override
+	{
+		YulLValueChecker yulChecker{m_declaration->name()};
+		yulChecker(_inlineAssembly.operations());
+		m_willBeWrittenTo = yulChecker.willBeWrittenTo();
 	}
 private:
 	Declaration const* m_declaration{};
