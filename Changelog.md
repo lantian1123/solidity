@@ -6,6 +6,7 @@ Language Features:
 
 Compiler Features:
  * Parser: Remove the experimental error recovery mode (``--error-recovery`` / ``settings.parserErrorRecovery``).
+ * Code Generator: Remove redundant overflow checks in specific for loops.
  * Yul Optimizer: If ``PUSH0`` is supported, favor zero literals over storing zero values in variables.
  * Yul Optimizer: Run the ``Rematerializer`` and ``UnusedPruner`` steps at the end of the default clean-up sequence.
 
@@ -30,7 +31,6 @@ Language Features:
 
 
 Compiler Features:
- * Code Generator: Remove redundant overflow checks in specific for loops.
  * Commandline Interface: Add ``--ast-compact-json`` output in assembler mode.
  * Commandline Interface: Add ``--ir-ast-json`` and ``--ir-optimized-ast-json`` outputs for Solidity input, providing AST in compact JSON format for IR and optimized IR.
  * Commandline Interface: Respect ``--optimize-yul`` and ``--no-optimize-yul`` in compiler mode and accept them in assembler mode as well. ``--optimize --no-optimize-yul`` combination now allows enabling EVM assembly optimizer without enabling Yul optimizer.
