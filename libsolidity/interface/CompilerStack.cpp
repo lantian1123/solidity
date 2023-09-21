@@ -1498,7 +1498,8 @@ void CompilerStack::generateIR(ContractDefinition const& _contract)
 		m_revertStrings,
 		sourceIndices(),
 		m_debugInfoSelection,
-		this
+		this,
+		m_optimiserSettings
 	);
 	compiledContract.yulIR = generator.run(
 		_contract,

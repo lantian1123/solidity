@@ -224,7 +224,7 @@ std::string IRGenerator::generate(
 
 std::string IRGenerator::generate(Block const& _block)
 {
-	IRGeneratorForStatements generator(m_context, m_utils);
+	IRGeneratorForStatements generator(m_context, m_utils, m_optimiserSettings);
 	generator.generate(_block);
 	return generator.code();
 }
@@ -447,7 +447,7 @@ std::string IRGenerator::generateModifier(
 			(!_modifierInvocation.arguments() || _modifierInvocation.arguments()->empty()),
 			""
 		);
-		IRGeneratorForStatements expressionEvaluator(m_context, m_utils);
+		IRGeneratorForStatements expressionEvaluator(m_context, m_utils, m_optimiserSettings);
 		if (_modifierInvocation.arguments())
 			for (size_t i = 0; i < _modifierInvocation.arguments()->size(); i++)
 			{
@@ -462,7 +462,7 @@ std::string IRGenerator::generateModifier(
 			}
 
 		t("evalArgs", expressionEvaluator.code());
-		IRGeneratorForStatements generator(m_context, m_utils, [&]() {
+		IRGeneratorForStatements generator(m_context, m_utils, m_optimiserSettings, [&]() {
 			std::string ret = joinHumanReadable(retParams);
 			return
 				(ret.empty() ? "" : ret + " := ") +
@@ -572,7 +572,7 @@ std::string IRGenerator::generateGetter(VariableDeclaration const& _varDecl)
 				dispenseLocationComment(m_context.mostDerivedContract())
 			)
 			("functionName", functionName)
-			("constantValueFunction", IRGeneratorForStatements(m_context, m_utils).constantValueFunction(_varDecl))
+			("constantValueFunction", IRGeneratorForStatements(m_context, m_utils, m_optimiserSettings).constantValueFunction(_varDecl))
 			("ret", suffixedVariableNameList("ret_", 0, _varDecl.type()->sizeOnStack()))
 			.render();
 		}
@@ -747,7 +747,7 @@ std::string IRGenerator::generateExternalFunction(ContractDefinition const& _con
 
 std::string IRGenerator::generateInitialAssignment(VariableDeclaration const& _varDecl)
 {
-	IRGeneratorForStatements generator(m_context, m_utils);
+	IRGeneratorForStatements generator(m_context, m_utils, m_optimiserSettings);
 	generator.initializeLocalVar(_varDecl);
 	return generator.code();
 }
@@ -796,7 +796,7 @@ std::pair<std::string, std::map<ContractDefinition const*, std::vector<std::stri
 						modifier->arguments()
 					).second, "");
 
-	IRGeneratorForStatements generator{m_context, m_utils};
+	IRGeneratorForStatements generator{m_context, m_utils, m_optimiserSettings};
 	for (auto&& [baseContract, arguments]: baseConstructorArguments)
 	{
 		solAssert(baseContract && arguments, "");
@@ -817,7 +817,7 @@ std::pair<std::string, std::map<ContractDefinition const*, std::vector<std::stri
 
 std::string IRGenerator::initStateVariables(ContractDefinition const& _contract)
 {
-	IRGeneratorForStatements generator{m_context, m_utils};
+	IRGeneratorForStatements generator{m_context, m_utils, m_optimiserSettings};
 	for (VariableDeclaration const* variable: _contract.stateVariables())
 		if (!variable->isConstant())
 			generator.initializeStateVar(*variable);

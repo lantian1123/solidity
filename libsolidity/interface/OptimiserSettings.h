@@ -123,6 +123,11 @@ struct OptimiserSettings
 			expectedExecutionsPerDeployment == _other.expectedExecutionsPerDeployment;
 	}
 
+	bool operator!=(OptimiserSettings const& _other) const
+	{
+		return !(*this == _other);
+	}
+
 	/// Move literals to the right of commutative binary operators during code generation.
 	/// This helps exploiting associativity.
 	bool runOrderLiterals = false;

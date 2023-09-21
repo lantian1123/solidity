@@ -352,7 +352,7 @@ std::string IRGeneratorForStatements::constantValueFunction(VariableDeclaration 
 			)");
 			templ("sourceLocationComment", dispenseLocationComment(_constant, m_context));
 			templ("functionName", functionName);
-			IRGeneratorForStatements generator(m_context, m_utils);
+			IRGeneratorForStatements generator(m_context, m_utils, m_optimiserSettings);
 			solAssert(_constant.value());
 			Type const& constantType = *_constant.type();
 			templ("value", generator.evaluateExpression(*_constant.value(), constantType).commaSeparatedList());
@@ -3214,7 +3214,7 @@ void IRGeneratorForStatements::generateLoop(
 	if (_loopExpression)
 	{
 		Arithmetic previousArithmetic = m_context.arithmetic();
-		if (_isSimpleCounterLoop)
+		if (m_optimiserSettings != OptimiserSettings::none() && _isSimpleCounterLoop)
 			m_context.setArithmetic(Arithmetic::Wrapping);
 		_loopExpression->accept(*this);
 		m_context.setArithmetic(previousArithmetic);
