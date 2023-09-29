@@ -85,7 +85,7 @@ void SyntaxTest::parseAndAnalyze()
 	catch (UnimplementedFeatureError const& _e)
 	{
 		m_errorList.emplace_back(SyntaxTestError{
-			"UnimplementedFeatureError",
+			Error::Type::UnimplementedFeatureError,
 			std::nullopt,
 			errorMessage(_e),
 			"",
@@ -134,7 +134,7 @@ void SyntaxTest::filterObtainedErrors()
 			}
 		}
 		m_errorList.emplace_back(SyntaxTestError{
-			Error::formatErrorType(currentError->type()),
+			currentError->type(),
 			currentError->errorId(),
 			errorMessage(*currentError),
 			sourceName,
