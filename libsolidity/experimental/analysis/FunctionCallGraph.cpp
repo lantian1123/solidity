@@ -24,8 +24,7 @@ using namespace solidity::util;
 
 FunctionCallGraph::FunctionCallGraph(solidity::frontend::experimental::Analysis& _analysis):
 		m_analysis(_analysis),
-		m_errorReporter(_analysis.errorReporter()),
-		m_currentFunction(nullptr)
+		m_errorReporter(_analysis.errorReporter())
 {
 }
 
@@ -39,8 +38,7 @@ bool FunctionCallGraph::analyze(SourceUnit const& _sourceUnit)
 
 bool FunctionCallGraph::visit(FunctionDefinition const& _functionDefinition)
 {
-	solAssert(!m_inFunctionDefinition && !m_currentFunction);
-	m_inFunctionDefinition = true;
+	solAssert(!m_currentFunction);
 	m_currentFunction = &_functionDefinition;
 	return true;
 }
@@ -51,7 +49,6 @@ void FunctionCallGraph::endVisit(FunctionDefinition const&)
 	// another function in its body - insert it into the graph without child nodes.
 	if (!annotation().functionCallGraph.edges.count(m_currentFunction))
 		annotation().functionCallGraph.edges.insert({m_currentFunction, {}});
-	m_inFunctionDefinition = false;
 	m_currentFunction = nullptr;
 }
 
@@ -60,11 +57,8 @@ bool FunctionCallGraph::visit(Identifier const& _identifier)
 	auto callee = dynamic_cast<FunctionDefinition const*>(_identifier.annotation().referencedDeclaration);
 	// Check that the identifier is within a function body and is a function, and add it to the graph
 	// as an ``m_currentFunction`` -> ``callee`` edge.
-	if (m_inFunctionDefinition && callee)
-	{
-		solAssert(m_currentFunction, "Child node must have a parent");
+	if (m_currentFunction && callee)
 		add(m_currentFunction, callee);
-	}
 	return true;
 }
 
