@@ -99,14 +99,14 @@ private:
 
 	/// Starts at @a _entry and parses the control flow of @a _node.
 	/// @returns The node at which the parsed control flow ends.
-	/// m_currentNode is not affected (it is saved and restored).
+	/// m_currentFunction is not affected (it is saved and restored).
 	CFGNode* createFlow(CFGNode* _entry, ASTNode const& _node);
 
 	/// Creates an arc from @a _from to @a _to.
 	static void connect(CFGNode* _from, CFGNode* _to);
 
 	/// Splits the control flow starting at the current node into n paths.
-	/// m_currentNode is set to nullptr and has to be set manually or
+	/// m_currentFunction is set to nullptr and has to be set manually or
 	/// using mergeFlow later.
 	template<size_t n>
 	std::array<CFGNode*, n> splitFlow()
@@ -122,7 +122,7 @@ private:
 	}
 
 	/// Splits the control flow starting at the current node into @a _n paths.
-	/// m_currentNode is set to nullptr and has to be set manually or
+	/// m_currentFunction is set to nullptr and has to be set manually or
 	/// using mergeFlow later.
 	std::vector<CFGNode*> splitFlow(size_t n)
 	{

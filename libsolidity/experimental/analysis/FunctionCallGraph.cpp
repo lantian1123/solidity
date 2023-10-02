@@ -23,10 +23,9 @@ using namespace solidity::frontend::experimental;
 using namespace solidity::util;
 
 FunctionCallGraph::FunctionCallGraph(solidity::frontend::experimental::Analysis& _analysis):
-	m_analysis(_analysis),
-	m_errorReporter(_analysis.errorReporter()),
-	m_currentNode(nullptr),
-	m_inFunctionDefinition(false)
+		m_analysis(_analysis),
+		m_errorReporter(_analysis.errorReporter()),
+		m_currentFunction(nullptr)
 {
 }
 
@@ -40,8 +39,9 @@ bool FunctionCallGraph::analyze(SourceUnit const& _sourceUnit)
 
 bool FunctionCallGraph::visit(FunctionDefinition const& _functionDefinition)
 {
+	solAssert(!m_inFunctionDefinition && !m_currentFunction);
 	m_inFunctionDefinition = true;
-	m_currentNode = &_functionDefinition;
+	m_currentFunction = &_functionDefinition;
 	return true;
 }
 
@@ -49,36 +49,28 @@ void FunctionCallGraph::endVisit(FunctionDefinition const&)
 {
 	// If we're done visiting a function declaration without said function referencing/calling
 	// another function in its body - insert it into the graph without child nodes.
-	if (!annotation().functionCallGraph.edges.count(m_currentNode))
-	{
-		annotation().functionCallGraph.edges.insert({m_currentNode, {}});
-		annotation().functionCallGraph.reverseEdges[nullptr].insert(m_currentNode);
-	}
+	if (!annotation().functionCallGraph.edges.count(m_currentFunction))
+		annotation().functionCallGraph.edges.insert({m_currentFunction, {}});
 	m_inFunctionDefinition = false;
+	m_currentFunction = nullptr;
 }
 
 bool FunctionCallGraph::visit(Identifier const& _identifier)
 {
 	auto callee = dynamic_cast<FunctionDefinition const*>(_identifier.annotation().referencedDeclaration);
 	// Check that the identifier is within a function body and is a function, and add it to the graph
-	// as an ``m_currentNode`` -> ``callee`` edge.
-	if (m_inFunctionDefinition && _identifier.annotation().referencedDeclaration && callee)
+	// as an ``m_currentFunction`` -> ``callee`` edge.
+	if (m_inFunctionDefinition && callee)
 	{
-		solAssert(m_currentNode, "Child node must have a parent");
-		add(m_currentNode, callee);
+		solAssert(m_currentFunction, "Child node must have a parent");
+		add(m_currentFunction, callee);
 	}
 	return true;
 }
 
 void FunctionCallGraph::add(FunctionDefinition const* _caller, FunctionDefinition const* _callee)
 {
-	// Add caller and callee as and edge, as well as the reverse edge, i.e. callee -> caller.
-	// If the caller is already in the reverse edges as a childless node, remove it, since it now
-	// has a child.
 	annotation().functionCallGraph.edges[_caller].insert(_callee);
-	annotation().functionCallGraph.reverseEdges[_callee].insert(_caller);
-	if (annotation().functionCallGraph.reverseEdges[nullptr].count(_caller) > 0)
-		annotation().functionCallGraph.reverseEdges[nullptr].erase(_caller);
 }
 
 FunctionCallGraph::GlobalAnnotation& FunctionCallGraph::annotation()

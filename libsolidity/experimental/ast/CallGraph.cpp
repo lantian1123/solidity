@@ -35,20 +35,5 @@ std::ostream& solidity::frontend::experimental::operator<<(std::ostream& _out, C
 		}
 		_out << "}" << std::endl;
 	}
-
-	_out << "\nREVERSE EDGES" << "\n";
-	_out << "===================" << std::endl;
-	for (auto [top, subs]: _callGraph.reverseEdges)
-	{
-		std::string topName = top ? top->name() : "nullptr";
-		_out << "(" << topName <<") --> {";
-		for (auto sub: subs)
-		{
-			std::string subName = sub->name().empty() ? "fallback" : sub->name();
-			_out << subName << ",";
-		}
-		_out << "}" << std::endl;
-	}
-
 	return _out;
 }

@@ -35,7 +35,6 @@ struct CallGraph
 	/// The map contains a key for every possible caller, even if does not actually perform
 	/// any calls.
 	std::map<FunctionDefinition const*, std::set<FunctionDefinition const*>> edges;
-	std::map<FunctionDefinition const*, std::set<FunctionDefinition const*>> reverseEdges;
 };
 
 std::ostream& operator<<(std::ostream& _out, CallGraph const& _callGraph);

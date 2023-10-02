@@ -51,8 +51,8 @@ private:
 
 	Analysis& m_analysis;
 	langutil::ErrorReporter& m_errorReporter;
-	FunctionDefinition const* m_currentNode;
-	bool m_inFunctionDefinition;
+	FunctionDefinition const* m_currentFunction;
+	bool m_inFunctionDefinition = false;
 };
 
 }
