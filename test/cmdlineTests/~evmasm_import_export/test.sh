@@ -7,7 +7,7 @@ source "${REPO_ROOT}/scripts/common.sh"
 SOLTMPDIR=$(mktemp -d -t "cmdline-test-evmasm-import-export-XXXXXX")
 (
     cd "$SOLTMPDIR"
-    if ! "$REPO_ROOT/scripts/ASTImportTest.sh" evm-assembly
+    if ! "$REPO_ROOT/scripts/ImportExportTest.sh" evm-assembly
     then
         rm -r "$SOLTMPDIR"
         fail

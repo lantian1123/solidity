@@ -15,7 +15,7 @@ import traceback
 
 
 def uncaught_exception_hook(exc_type, exc_value, exc_traceback):
-    # The script `scripts/ASTImportTest.sh` will interpret return code 3
+    # The script `scripts/ImportExportTest.sh` will interpret return code 3
     # as a critical error (because of the uncaught exception) and will
     # terminate further execution.
     print("Unhandled exception: %s", "".join(traceback.format_exception(exc_type, exc_value, exc_traceback)))
