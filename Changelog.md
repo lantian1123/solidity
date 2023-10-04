@@ -5,7 +5,9 @@ Language Features:
 
 
 Compiler Features:
+ * Commandline Interface: Add new input mode ``--import-asm-json`` that can import EVM assembly in the format used by ``--asm-json``.
  * Parser: Remove the experimental error recovery mode (``--error-recovery`` / ``settings.parserErrorRecovery``).
+ * Standard JSON Interface: Add **experimental** support for importing EVM Assembly JSON via Standard JSON.
  * Yul Optimizer: If ``PUSH0`` is supported, favor zero literals over storing zero values in variables.
  * Yul Optimizer: Run the ``Rematerializer`` and ``UnusedPruner`` steps at the end of the default clean-up sequence.
 
