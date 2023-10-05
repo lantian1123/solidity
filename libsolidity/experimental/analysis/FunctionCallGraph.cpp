@@ -16,8 +16,9 @@
 */
 // SPDX-License-Identifier: GPL-3.0
 
-#include <libsolidity/experimental/analysis/Analysis.h>
 #include <libsolidity/experimental/analysis/FunctionCallGraph.h>
+
+#include <libsolidity/experimental/analysis/Analysis.h>
 
 using namespace solidity::frontend::experimental;
 using namespace solidity::util;
