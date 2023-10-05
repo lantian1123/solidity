@@ -23,7 +23,7 @@
 using namespace solidity::frontend::experimental;
 using namespace solidity::util;
 
-FunctionCallGraph::FunctionCallGraph(solidity::frontend::experimental::Analysis& _analysis):
+FunctionCallGraph::FunctionCallGraph(Analysis& _analysis):
 	m_analysis(_analysis),
 	m_errorReporter(_analysis.errorReporter())
 {
