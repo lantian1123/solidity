@@ -54,7 +54,7 @@ void FunctionCallGraph::endVisit(FunctionDefinition const&)
 
 bool FunctionCallGraph::visit(Identifier const& _identifier)
 {
-	auto callee = dynamic_cast<FunctionDefinition const*>(_identifier.annotation().referencedDeclaration);
+	auto const* callee = dynamic_cast<FunctionDefinition const*>(_identifier.annotation().referencedDeclaration);
 	// Check that the identifier is within a function body and is a function, and add it to the graph
 	// as an ``m_currentFunction`` -> ``callee`` edge.
 	if (m_currentFunction && callee)
