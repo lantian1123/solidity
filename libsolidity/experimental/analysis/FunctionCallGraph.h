@@ -46,7 +46,7 @@ private:
 	bool visit(FunctionDefinition const& _functionDefinition) override;
 	void endVisit(FunctionDefinition const&) override;
 	void endVisit(Identifier const& _identifier) override;
-	void add(FunctionDefinition const* _caller, FunctionDefinition const* _callee);
+	void addEdge(FunctionDefinition const* _caller, FunctionDefinition const* _callee);
 	GlobalAnnotation& annotation();
 
 	Analysis& m_analysis;

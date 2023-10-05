@@ -58,10 +58,10 @@ void FunctionCallGraph::endVisit(Identifier const& _identifier)
 	// Check that the identifier is within a function body and is a function, and add it to the graph
 	// as an ``m_currentFunction`` -> ``callee`` edge.
 	if (m_currentFunction && callee)
-		add(m_currentFunction, callee);
+		addEdge(m_currentFunction, callee);
 }
 
-void FunctionCallGraph::add(FunctionDefinition const* _caller, FunctionDefinition const* _callee)
+void FunctionCallGraph::addEdge(FunctionDefinition const* _caller, FunctionDefinition const* _callee)
 {
 	annotation().functionCallGraph.edges[_caller].insert(_callee);
 }
