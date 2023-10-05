@@ -45,7 +45,7 @@ public:
 private:
 	bool visit(FunctionDefinition const& _functionDefinition) override;
 	void endVisit(FunctionDefinition const&) override;
-	bool visit(Identifier const& _identifier) override;
+	void endVisit(Identifier const& _identifier) override;
 	void add(FunctionDefinition const* _caller, FunctionDefinition const* _callee);
 	GlobalAnnotation& annotation();
 
