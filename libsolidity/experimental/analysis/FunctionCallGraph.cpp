@@ -48,8 +48,7 @@ void FunctionCallGraph::endVisit(FunctionDefinition const&)
 {
 	// If we're done visiting a function declaration without said function referencing/calling
 	// another function in its body - insert it into the graph without child nodes.
-	if (!annotation().functionCallGraph.edges.count(m_currentFunction))
-		annotation().functionCallGraph.edges.insert({m_currentFunction, {}});
+	annotation().functionCallGraph.edges.try_emplace(m_currentFunction, std::set<FunctionDefinition const*>{});
 	m_currentFunction = nullptr;
 }
 
