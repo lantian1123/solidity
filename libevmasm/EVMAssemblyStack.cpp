@@ -22,6 +22,8 @@
 #include <liblangutil/Exceptions.h>
 #include <libsolidity/codegen/CompilerContext.h>
 
+#include <tuple>
+
 using namespace solidity::util;
 using namespace solidity::langutil;
 using namespace solidity::frontend;
@@ -33,10 +35,9 @@ void EVMAssemblyStack::parseAndAnalyze(std::string const& _sourceName, std::stri
 {
 	solAssert(!m_evmAssembly);
 	m_name = _sourceName;
-	solRequire(jsonParseStrict(_source, m_json), AssemblyImportException, "Could not parse JSON file.");
-	auto result = evmasm::Assembly::fromJSON(m_json);
-	m_evmAssembly = result.first;
-	m_sourceList = result.second;
+	Json::Value assemblyJson;
+	solRequire(jsonParseStrict(_source, assemblyJson), AssemblyImportException, "Could not parse JSON file.");
+	std::tie(m_evmAssembly, m_sourceList) = evmasm::Assembly::fromJSON(assemblyJson);
 	solRequire(m_evmAssembly != nullptr, AssemblyImportException, "Could not create evm assembly object.");
 }
 

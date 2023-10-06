@@ -72,7 +72,6 @@ public:
 private:
 	langutil::EVMVersion m_evmVersion;
 	std::string m_name;
-	Json::Value m_json;
 	std::shared_ptr<evmasm::Assembly> m_evmAssembly;
 	std::shared_ptr<evmasm::Assembly> m_evmRuntimeAssembly;
 	evmasm::LinkerObject m_object; ///< Deployment object (includes the runtime sub-object).
