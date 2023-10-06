@@ -775,23 +775,26 @@ void CommandLineInterface::assembleFromEVMAssemblyJSON()
 	solAssert(m_options.input.mode == InputMode::EVMAssemblerJSON);
 	solAssert(!m_assemblyStack);
 	solAssert(!m_evmAssemblyStack && !m_compiler);
-	std::unique_ptr<evmasm::EVMAssemblyStack> evmAssemblyStack;
+
 	solAssert(m_fileReader.sourceUnits().size() == 1);
 	auto&& [sourceUnitName, source] = *m_fileReader.sourceUnits().begin();
+
+	auto evmAssemblyStack = std::make_unique<evmasm::EVMAssemblyStack>(m_options.output.evmVersion);
 	try
 	{
-		evmAssemblyStack = std::make_unique<evmasm::EVMAssemblyStack>(m_options.output.evmVersion);
 		evmAssemblyStack->parseAndAnalyze(sourceUnitName, source);
-		if (m_options.output.debugInfoSelection.has_value())
-			evmAssemblyStack->selectDebugInfo(m_options.output.debugInfoSelection.value());
-		evmAssemblyStack->assemble();
-		m_evmAssemblyStack = std::move(evmAssemblyStack);
-		m_assemblyStack = m_evmAssemblyStack.get();
 	}
 	catch (evmasm::AssemblyImportException const& _exception)
 	{
 		solThrow(CommandLineExecutionError, "Assembly Import Error: "s + _exception.what());
 	}
+
+	if (m_options.output.debugInfoSelection.has_value())
+		evmAssemblyStack->selectDebugInfo(m_options.output.debugInfoSelection.value());
+	evmAssemblyStack->assemble();
+
+	m_evmAssemblyStack = std::move(evmAssemblyStack);
+	m_assemblyStack = m_evmAssemblyStack.get();
 }
 
 void CommandLineInterface::compile()
