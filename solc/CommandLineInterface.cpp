@@ -174,23 +174,23 @@ void CommandLineInterface::handleEVMAssembly(std::string const& _contract)
 		m_options.input.mode == frontend::InputMode::EVMAssemblerJSON
 	);
 
-	if (m_options.compiler.outputs.asm_ || m_options.compiler.outputs.asmJson)
-	{
-		std::string assembly;
-		if (m_options.compiler.outputs.asmJson)
-			assembly = util::jsonPrint(removeNullMembers(m_assemblyStack->assemblyJSON(_contract)), m_options.formatting.json);
-		else
-			assembly = m_assemblyStack->assemblyString(_contract, m_fileReader.sourceUnits());
+	if (!m_options.compiler.outputs.asm_ && !m_options.compiler.outputs.asmJson)
+		return;
 
-		if (!m_options.output.dir.empty())
-			createFile(
-				m_compiler->filesystemFriendlyName(_contract) +
-				(m_options.compiler.outputs.asmJson ? "_evm.json" : ".evm"),
-				assembly
-			);
-		else
-			sout() << "EVM assembly:" << std::endl << assembly << std::endl;
-	}
+	std::string assembly;
+	if (m_options.compiler.outputs.asmJson)
+		assembly = util::jsonPrint(removeNullMembers(m_assemblyStack->assemblyJSON(_contract)), m_options.formatting.json);
+	else
+		assembly = m_assemblyStack->assemblyString(_contract, m_fileReader.sourceUnits());
+
+	if (!m_options.output.dir.empty())
+		createFile(
+			m_compiler->filesystemFriendlyName(_contract) +
+			(m_options.compiler.outputs.asmJson ? "_evm.json" : ".evm"),
+			assembly
+		);
+	else
+		sout() << "EVM assembly:" << std::endl << assembly << std::endl;
 }
 
 void CommandLineInterface::handleBinary(std::string const& _contract)
