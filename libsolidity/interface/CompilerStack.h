@@ -126,7 +126,7 @@ public:
 		/// Compilation from an imported Solidity AST.
 		SolidityAST,
 		/// Compilation from an imported EVM Assembly JSON.
-		EvmAssemblyJSON
+		EVMAssemblyJSON
 	};
 
 	/// Creates a new compiler stack.

@@ -85,7 +85,7 @@ private:
 	void printVersion();
 	void printLicense();
 	void compile();
-	void assembleFromEvmAssemblyJson();
+	void assembleFromEVMAssemblyJSON();
 	void serveLSP();
 	void link();
 	void writeLinkedFiles();

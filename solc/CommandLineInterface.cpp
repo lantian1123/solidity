@@ -738,7 +738,7 @@ void CommandLineInterface::processInput()
 		outputCompilationResults();
 		break;
 	case InputMode::EVMAssemblerJSON:
-		assembleFromEvmAssemblyJson();
+		assembleFromEVMAssemblyJSON();
 		handleCombinedJSON();
 		handleBytecode(m_assemblyStack->contractNames().front());
 		handleEVMAssembly(m_assemblyStack->contractNames().front());
@@ -759,7 +759,7 @@ void CommandLineInterface::printLicense()
 	sout() << licenseText << std::endl;
 }
 
-void CommandLineInterface::assembleFromEvmAssemblyJson()
+void CommandLineInterface::assembleFromEVMAssemblyJSON()
 {
 	solAssert(m_options.input.mode == InputMode::EVMAssemblerJSON);
 	solAssert(!m_assemblyStack);

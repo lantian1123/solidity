@@ -701,7 +701,7 @@ bool CompilerStack::isRequestedContract(ContractDefinition const& _contract) con
 
 bool CompilerStack::compile(State _stopAfter)
 {
-	solAssert(m_compilationSourceType != CompilationSourceType::EvmAssemblyJSON);
+	solAssert(m_compilationSourceType != CompilationSourceType::EVMAssemblyJSON);
 	m_stopAfter = _stopAfter;
 	if (m_stackState < AnalysisSuccessful)
 		if (!parseAndAnalyze(_stopAfter))
@@ -1618,8 +1618,8 @@ std::string CompilerStack::createMetadata(Contract const& _contract, bool _forIR
 	case CompilationSourceType::SolidityAST:
 		sourceType = "SolidityAST";
 		break;
-	case CompilationSourceType::EvmAssemblyJSON:
-		sourceType = "EvmAssemblyJson";
+	case CompilationSourceType::EVMAssemblyJSON:
+		sourceType = "EVMAssemblyJSON";
 		break;
 	default:
 		solAssert(false);
