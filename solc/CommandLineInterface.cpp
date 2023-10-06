@@ -1149,6 +1149,33 @@ std::string CommandLineInterface::objectWithLinkRefsHex(evmasm::LinkerObject con
 	return out;
 }
 
+namespace
+{
+
+std::map<std::string, unsigned> collectYulSourceIndices(yul::Object const& _object)
+{
+	std::map<std::string, unsigned> sourceIndices;
+
+	if (_object.debugData && _object.debugData->sourceNames.has_value())
+		for (auto const& [index, sourceName]: *_object.debugData->sourceNames)
+		{
+			solAssert(sourceIndices.count(*sourceName) == 0 || sourceIndices[*sourceName] == index);
+			sourceIndices[*sourceName] = index;
+		}
+
+	for (auto const& subNode: _object.subObjects)
+		if (auto const* subObject = dynamic_cast<yul::Object const*>(subNode.get()))
+			for (auto const& [name, index]: collectYulSourceIndices(*subObject))
+			{
+				solAssert(sourceIndices.count(name) == 0 || sourceIndices[name] == index);
+				sourceIndices[name] = index;
+			}
+
+	return sourceIndices;
+}
+
+}
+
 void CommandLineInterface::assembleYul(yul::YulStack::Language _language, yul::YulStack::Machine _targetMachine)
 {
 	solAssert(m_options.input.mode == InputMode::Assembler);
@@ -1240,25 +1267,9 @@ void CommandLineInterface::assembleYul(yul::YulStack::Language _language, yul::Y
 		{
 			std::shared_ptr<evmasm::Assembly> assembly{stack.assembleEVMWithDeployed().first};
 			if (assembly)
-			{
-				std::function<std::map<std::string, unsigned>(yul::Object const&)> collectSourceIndices =
-					[&](yul::Object const& _object) -> std::map<std::string, unsigned> {
-					std::map<std::string, unsigned> sourceIndices;
-					if (_object.debugData && _object.debugData->sourceNames.has_value())
-						for (auto const& iter: *_object.debugData->sourceNames)
-							sourceIndices[*iter.second] = iter.first;
-					for (auto const& sub: _object.subObjects)
-					{
-						auto const* subObject = dynamic_cast<yul::Object const*>(sub.get());
-						if (subObject)
-							for (auto const& [name, index]: collectSourceIndices(*subObject))
-								sourceIndices[name] = index;
-					}
-					return sourceIndices;
-				};
 				if (stack.parserResult() && stack.parserResult()->debugData)
 				{
-					std::map<std::string, unsigned> sourceIndices = collectSourceIndices(*stack.parserResult());
+					std::map<std::string, unsigned> sourceIndices = collectYulSourceIndices(*stack.parserResult());
 					// if sourceIndices are empty here, there were no source locations annotated in the yul source.
 					// in this case, we just add the filename of the yul file itself here.
 					if (sourceIndices.empty())
@@ -1281,7 +1292,6 @@ void CommandLineInterface::assembleYul(yul::YulStack::Language _language, yul::Y
 					) << std::endl;
 					return;
 				}
-			}
 			serr() << "Could not create Assembly JSON representation." << std::endl;
 		}
 	}
