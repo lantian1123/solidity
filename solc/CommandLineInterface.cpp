@@ -1283,7 +1283,7 @@ void CommandLineInterface::assembleYul(yul::YulStack::Language _language, yul::Y
 					std::vector<std::string> sourceList(max_index + 1);
 					uint32_t counter = 0;
 					for (auto& source: sourceList)
-						source = fmt::format("unknown-source-{}", counter++);
+						source = fmt::format("<unknown-source-{}>", counter++);
 
 					for (auto const& [name, index]: sourceIndices)
 						sourceList[index] = name;
