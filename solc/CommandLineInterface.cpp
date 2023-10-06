@@ -1246,7 +1246,7 @@ void CommandLineInterface::assembleYul(yul::YulStack::Language _language, yul::Y
 							sourceIndices[*iter.second] = iter.first;
 					for (auto const& sub: _object.subObjects)
 					{
-						auto subObject = dynamic_cast<yul::Object const*>(sub.get());
+						auto const* subObject = dynamic_cast<yul::Object const*>(sub.get());
 						if (subObject)
 							for (auto const& [name, index]: collectSourceIndices(*subObject))
 								sourceIndices[name] = index;
