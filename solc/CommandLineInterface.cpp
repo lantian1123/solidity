@@ -1274,20 +1274,22 @@ void CommandLineInterface::assembleYul(yul::YulStack::Language _language, yul::Y
 					// in this case, we just add the filename of the yul file itself here.
 					if (sourceIndices.empty())
 						sourceIndices[src.first] = 0;
+
 					size_t max_index = 0;
 					for (auto const& [name, index]: sourceIndices)
 						if (max_index < index)
 							max_index = index;
+
 					std::vector<std::string> sourceList(max_index + 1);
-					uint32_t counter{0};
+					uint32_t counter = 0;
 					for (auto& source: sourceList)
-						source = "unknown-source-" + std::to_string(counter++);
+						source = fmt::format("unknown-source-{}", counter++);
+
 					for (auto const& [name, index]: sourceIndices)
 						sourceList[index] = name;
+
 					sout() << util::jsonPrint(
-						removeNullMembers(
-							assembly->assemblyJSON(sourceList)
-						),
+						removeNullMembers(assembly->assemblyJSON(sourceList)),
 						m_options.formatting.json
 					) << std::endl;
 					return;
