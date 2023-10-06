@@ -1621,8 +1621,6 @@ std::string CompilerStack::createMetadata(Contract const& _contract, bool _forIR
 	case CompilationSourceType::EVMAssemblyJSON:
 		sourceType = "EVMAssemblyJSON";
 		break;
-	default:
-		solAssert(false);
 	}
 	meta["language"] = sourceType;
 	meta["compiler"]["version"] = VersionStringStrict;
