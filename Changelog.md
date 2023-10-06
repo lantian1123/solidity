@@ -6,6 +6,7 @@ Language Features:
 
 Compiler Features:
  * Commandline Interface: Use proper severity and coloring also for error messages produced outside of the compilation pipeline.
+ * EVM: Deprecate support for "Constantinople" and older EVM versions.
  * Parser: Remove the experimental error recovery mode (``--error-recovery`` / ``settings.parserErrorRecovery``).
  * Yul Optimizer: If ``PUSH0`` is supported, favor zero literals over storing zero values in variables.
  * Yul Optimizer: Run the ``Rematerializer`` and ``UnusedPruner`` steps at the end of the default clean-up sequence.

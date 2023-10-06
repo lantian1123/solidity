@@ -1,2 +1,4 @@
 Warning: Support for constantinople and older EVM versions is deprecated and will be removed in the future.
-Error: Failed to import AST: Imported tree evm version differs from configured evm version!
+
+Warning: Source file does not specify required compiler version!
+--> evm_version_constantinople/input.sol

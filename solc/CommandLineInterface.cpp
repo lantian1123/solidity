@@ -666,6 +666,12 @@ bool CommandLineInterface::parseArguments(int _argc, char const* const* _argv)
 
 void CommandLineInterface::processInput()
 {
+	if (m_options.output.evmVersion <= EVMVersion::constantinople())
+		report(
+			Error::Severity::Warning,
+			"Support for constantinople and older EVM versions is deprecated and will be removed in the future."
+		);
+
 	switch (m_options.input.mode)
 	{
 	case InputMode::Help:

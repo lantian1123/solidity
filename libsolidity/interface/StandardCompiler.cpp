@@ -787,6 +787,12 @@ std::variant<StandardCompiler::InputsAndSettings, Json::Value> StandardCompiler:
 		std::optional<langutil::EVMVersion> version = langutil::EVMVersion::fromString(settings["evmVersion"].asString());
 		if (!version)
 			return formatFatalError(Error::Type::JSONError, "Invalid EVM version requested.");
+		if (version <= EVMVersion::constantinople())
+			ret.errors.append(formatError(
+				Error::Type::Warning,
+				"general",
+				"Support for constantinople and older EVM versions is deprecated and will be removed in the future."
+			));
 		ret.evmVersion = *version;
 	}
 
