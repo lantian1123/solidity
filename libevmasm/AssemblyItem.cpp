@@ -247,16 +247,16 @@ std::string AssemblyItem::getJumpTypeAsString() const
 	}
 }
 
-void AssemblyItem::setJumpType(std::string const& _jumpType)
+std::optional<AssemblyItem::JumpType> AssemblyItem::parseJumpType(std::string const& _jumpType)
 {
 	if (_jumpType == "[in]")
-		m_jumpType = JumpType::IntoFunction;
+		return JumpType::IntoFunction;
 	else if (_jumpType == "[out]")
-		m_jumpType = JumpType::OutOfFunction;
+		return JumpType::OutOfFunction;
 	else if (_jumpType.empty())
-		m_jumpType = JumpType::Ordinary;
-	else
-		solThrow(AssemblyImportException, "Invalid jump type.");
+		return JumpType::Ordinary;
+
+	return std::nullopt;
 }
 
 std::string AssemblyItem::toAssemblyText(Assembly const& _assembly) const

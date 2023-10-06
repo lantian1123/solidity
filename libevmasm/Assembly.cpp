@@ -188,7 +188,12 @@ AssemblyItem Assembly::createAssemblyItemFromJSON(Json::Value const& _json, std:
 		if (!jumpType.empty())
 		{
 			if (item.instruction() == Instruction::JUMP || item.instruction() == Instruction::JUMPI)
-				item.setJumpType(jumpType);
+			{
+				std::optional<AssemblyItem::JumpType> parsedJumpType = AssemblyItem::parseJumpType(jumpType);
+				if (!parsedJumpType.has_value())
+					solThrow(AssemblyImportException, "Invalid jump type.");
+				item.setJumpType(parsedJumpType.value());
+			}
 			else
 				solThrow(
 					AssemblyImportException,
